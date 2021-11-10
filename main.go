@@ -3,21 +3,22 @@ package main
 import (
 	"fmt"
 
-	"gorm.io/gorm"
-	"gorm.io/driver/sqlite"
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
-	"backend/user"
 	"backend/handler"
+	"backend/user"
 )
 
 func main() {
 	db, err := gorm.Open(sqlite.Open("db.sqlite3"), &gorm.Config{})
 
 	if err != nil {
-		fmt.Println("Succes connect to DB")
 		panic("failed to connect")
 	}
+
+	fmt.Println("Succes connect to DB")
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
@@ -28,8 +29,8 @@ func main() {
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.RegisterUser)
+	api.POST("/sessions", userHandler.Login)
 
 	router.Run()
-
 
 }
